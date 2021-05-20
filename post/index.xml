@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on My New Hugo Site</title>
+    <link>https://daisy-mo.github.io/post/</link>
+    <description>Recent content in Posts on My New Hugo Site</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 20 May 2021 22:23:25 +0800</lastBuildDate><atom:link href="https://daisy-mo.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>dijkstra分析及代码</title>
+      <link>https://daisy-mo.github.io/post/blog/</link>
+      <pubDate>Thu, 20 May 2021 22:23:25 +0800</pubDate>
+      
+      <guid>https://daisy-mo.github.io/post/blog/</guid>
+      <description>前言  SPFASPF**A算法由于它上限 O(NM) = O(VE)O(N**M)=O(V**E)的时间复杂度,被卡掉的几率很大.在算法竞赛中,我们需要一个更稳定的算法:dijkstradijkstr**a.  什么是dijkstradijkstra?  dijkstradijkstra是一种单源最短路径算法,时间复杂度上限为O(n^2)O(n2)(朴素),在实际应用中较为稳定;;加上堆优化之后更是具有O((n+m)\log_{2}n)*O*((*n*+*m*)log2*n*)的时间复杂度,在稠密图中有不俗的表现.  dijkstradijkstra的原理/流程?  dijkstradijkstra本质上的思想是贪心,它只适用于不含负权边的图. 我们把点分成两类,一类是已经确定最短路径的点,称为&amp;quot;白点&amp;quot;,另一类是未确定最短路径的点,称为&amp;quot;蓝点&amp;quot; dijkstradijkstr**a的流程如下:: 1.1. 初始化dis[start] = 0,dis[start]=0,其余节点的disdis值为无穷大. 2.2. 找一个disdis值最小的蓝点x,x,把节点xx变成白点. 3.3. 遍历xx的所有出边(x,y,z),(x,y,z),若dis[y] &amp;gt; dis+ z,dis[y]&amp;gt;dis[x]+z,则令dis[y] = dis+ zdis[y]=dis[x]+z 4.4. 重复2,32,3两步,直到所有点都成为白点.. 时间复杂度为O(n^2)O(n2)  dijkstradijkstra为什么是正确的  当所有边长都是非负数的时候,全局最小值不可能再被其他节点更新.所以在第22步中找出的蓝点xx必然满足:dis:dis[x]已经是起点到xx的最短路径..我们不断选择全局最小值进行标记和拓展,最终可以得到起点到每个节点的最短路径的长度  图解  (令start = 1start=1) 开始时我们把dis[start]dis[start]初始化为00,其余点初始化为infinf  第一轮循环找到disdis值最小的点11,将11变成白点,对所有与11相连的蓝点的disdis值进行修改,使得dis[2]=2,dis[3]=4,dis[4]=7dis[2]=2,dis[3]=4,dis[4]=7  第二轮循环找到disdis值最小的点22,将22变成白点,对所有与22相连的蓝点的disdis值进行修改,使得dis[3]=3,dis[5]=4dis[3]=3,dis[5]=4  第三轮循环找到disdis值最小的点33,将33变成白点,对所有与22相连的蓝点的disdis值进行修改,使得dis[4]=4dis[4]=4  接下来两轮循环分别将4,54,5设为白点,算法结束,求出所有点的最短路径 时间复杂度O(n^2)O(n2)  为什么dijkstradijkstra不能处理有负权边的情况?  我们来看下面这张图  22到33的边权为-4−4,显然从11到33的最短路径为-2−2 (1-&amp;gt;2-&amp;gt;3).(1−&amp;gt;2−&amp;gt;3).但在循环开始时程序会找到当前disdis值最小的点33,并标记它为白点. 这时的dis[3]=1,dis[3]=1,然而11并不是起点到33的最短路径.因为33已经被标为白点,所以dis[3]dis[3]不会再被修改了.我们在边权存在负数的情况下得到了错误的答案.  dijkstradijkstra的堆优化?  观察dijkstradijkstr**a的流程,发现步骤22可以优化 怎么优化呢? 我会zkw线段树!我会斐波那契堆! 我会堆! 我们可以用堆对disdis数组进行维护,用O(\log_{2}n)*O*(log2*n*)的时间取出堆顶元素并删除,用O(\log_{2}n)*O*(log2*n*)遍历每条边,总复杂度O((n+m)\log_{2}n)*O*((*n*+*m*)log2*n*)  正权图请使用dijkstra算法,负权图请使用SPFA算法</description>
+    </item>
+    
+  </channel>
+</rss>

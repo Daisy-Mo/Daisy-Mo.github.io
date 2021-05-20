@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>dijkstra分析及代码 // My New Hugo Site</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.83.1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="John Doe" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://daisy-mo.github.io/css/main.min.88e7083eff65effb7485b6e6f38d10afbec25093a6fac42d734ce9024d3defbd.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="dijkstra分析及代码"/>
+<meta name="twitter:description" content="前言  SPFASPF**A算法由于它上限 O(NM) = O(VE)O(N**M)=O(V**E)的时间复杂度,被卡掉的几率很大.在算法竞赛中,我们需要一个更稳定的算法:dijkstradijkstr**a.  什么是dijkstradijkstra?  dijkstradijkstra是一种单源最短路径算法,时间复杂度上限为O(n^2)O(n2)(朴素),在实际应用中较为稳定;;加上堆优化之后更是具有O((n&#43;m)\log_{2}n)*O*((*n*&#43;*m*)log2*n*)的时间复杂度,在稠密图中有不俗的表现.  dijkstradijkstra的原理/流程?  dijkstradijkstra本质上的思想是贪心,它只适用于不含负权边的图. 我们把点分成两类,一类是已经确定最短路径的点,称为&quot;白点&quot;,另一类是未确定最短路径的点,称为&quot;蓝点&quot; dijkstradijkstr**a的流程如下:: 1.1. 初始化dis[start] = 0,dis[start]=0,其余节点的disdis值为无穷大. 2.2. 找一个disdis值最小的蓝点x,x,把节点xx变成白点. 3.3. 遍历xx的所有出边(x,y,z),(x,y,z),若dis[y] &gt; dis&#43; z,dis[y]&gt;dis[x]&#43;z,则令dis[y] = dis&#43; zdis[y]=dis[x]&#43;z 4.4. 重复2,32,3两步,直到所有点都成为白点.. 时间复杂度为O(n^2)O(n2)  dijkstradijkstra为什么是正确的  当所有边长都是非负数的时候,全局最小值不可能再被其他节点更新.所以在第22步中找出的蓝点xx必然满足:dis:dis[x]已经是起点到xx的最短路径..我们不断选择全局最小值进行标记和拓展,最终可以得到起点到每个节点的最短路径的长度  图解  (令start = 1start=1) 开始时我们把dis[start]dis[start]初始化为00,其余点初始化为infinf  第一轮循环找到disdis值最小的点11,将11变成白点,对所有与11相连的蓝点的disdis值进行修改,使得dis[2]=2,dis[3]=4,dis[4]=7dis[2]=2,dis[3]=4,dis[4]=7  第二轮循环找到disdis值最小的点22,将22变成白点,对所有与22相连的蓝点的disdis值进行修改,使得dis[3]=3,dis[5]=4dis[3]=3,dis[5]=4  第三轮循环找到disdis值最小的点33,将33变成白点,对所有与22相连的蓝点的disdis值进行修改,使得dis[4]=4dis[4]=4  接下来两轮循环分别将4,54,5设为白点,算法结束,求出所有点的最短路径 时间复杂度O(n^2)O(n2)  为什么dijkstradijkstra不能处理有负权边的情况?  我们来看下面这张图  22到33的边权为-4−4,显然从11到33的最短路径为-2−2 (1-&gt;2-&gt;3).(1−&gt;2−&gt;3).但在循环开始时程序会找到当前disdis值最小的点33,并标记它为白点. 这时的dis[3]=1,dis[3]=1,然而11并不是起点到33的最短路径.因为33已经被标为白点,所以dis[3]dis[3]不会再被修改了.我们在边权存在负数的情况下得到了错误的答案.  dijkstradijkstra的堆优化?  观察dijkstradijkstr**a的流程,发现步骤22可以优化 怎么优化呢? 我会zkw线段树!我会斐波那契堆! 我会堆! 我们可以用堆对disdis数组进行维护,用O(\log_{2}n)*O*(log2*n*)的时间取出堆顶元素并删除,用O(\log_{2}n)*O*(log2*n*)遍历每条边,总复杂度O((n&#43;m)\log_{2}n)*O*((*n*&#43;*m*)log2*n*)  正权图请使用dijkstra算法,负权图请使用SPFA算法"/>
+
+    <meta property="og:title" content="dijkstra分析及代码" />
+<meta property="og:description" content="前言  SPFASPF**A算法由于它上限 O(NM) = O(VE)O(N**M)=O(V**E)的时间复杂度,被卡掉的几率很大.在算法竞赛中,我们需要一个更稳定的算法:dijkstradijkstr**a.  什么是dijkstradijkstra?  dijkstradijkstra是一种单源最短路径算法,时间复杂度上限为O(n^2)O(n2)(朴素),在实际应用中较为稳定;;加上堆优化之后更是具有O((n&#43;m)\log_{2}n)*O*((*n*&#43;*m*)log2*n*)的时间复杂度,在稠密图中有不俗的表现.  dijkstradijkstra的原理/流程?  dijkstradijkstra本质上的思想是贪心,它只适用于不含负权边的图. 我们把点分成两类,一类是已经确定最短路径的点,称为&quot;白点&quot;,另一类是未确定最短路径的点,称为&quot;蓝点&quot; dijkstradijkstr**a的流程如下:: 1.1. 初始化dis[start] = 0,dis[start]=0,其余节点的disdis值为无穷大. 2.2. 找一个disdis值最小的蓝点x,x,把节点xx变成白点. 3.3. 遍历xx的所有出边(x,y,z),(x,y,z),若dis[y] &gt; dis&#43; z,dis[y]&gt;dis[x]&#43;z,则令dis[y] = dis&#43; zdis[y]=dis[x]&#43;z 4.4. 重复2,32,3两步,直到所有点都成为白点.. 时间复杂度为O(n^2)O(n2)  dijkstradijkstra为什么是正确的  当所有边长都是非负数的时候,全局最小值不可能再被其他节点更新.所以在第22步中找出的蓝点xx必然满足:dis:dis[x]已经是起点到xx的最短路径..我们不断选择全局最小值进行标记和拓展,最终可以得到起点到每个节点的最短路径的长度  图解  (令start = 1start=1) 开始时我们把dis[start]dis[start]初始化为00,其余点初始化为infinf  第一轮循环找到disdis值最小的点11,将11变成白点,对所有与11相连的蓝点的disdis值进行修改,使得dis[2]=2,dis[3]=4,dis[4]=7dis[2]=2,dis[3]=4,dis[4]=7  第二轮循环找到disdis值最小的点22,将22变成白点,对所有与22相连的蓝点的disdis值进行修改,使得dis[3]=3,dis[5]=4dis[3]=3,dis[5]=4  第三轮循环找到disdis值最小的点33,将33变成白点,对所有与22相连的蓝点的disdis值进行修改,使得dis[4]=4dis[4]=4  接下来两轮循环分别将4,54,5设为白点,算法结束,求出所有点的最短路径 时间复杂度O(n^2)O(n2)  为什么dijkstradijkstra不能处理有负权边的情况?  我们来看下面这张图  22到33的边权为-4−4,显然从11到33的最短路径为-2−2 (1-&gt;2-&gt;3).(1−&gt;2−&gt;3).但在循环开始时程序会找到当前disdis值最小的点33,并标记它为白点. 这时的dis[3]=1,dis[3]=1,然而11并不是起点到33的最短路径.因为33已经被标为白点,所以dis[3]dis[3]不会再被修改了.我们在边权存在负数的情况下得到了错误的答案.  dijkstradijkstra的堆优化?  观察dijkstradijkstr**a的流程,发现步骤22可以优化 怎么优化呢? 我会zkw线段树!我会斐波那契堆! 我会堆! 我们可以用堆对disdis数组进行维护,用O(\log_{2}n)*O*(log2*n*)的时间取出堆顶元素并删除,用O(\log_{2}n)*O*(log2*n*)遍历每条边,总复杂度O((n&#43;m)\log_{2}n)*O*((*n*&#43;*m*)log2*n*)  正权图请使用dijkstra算法,负权图请使用SPFA算法" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://daisy-mo.github.io/post/blog/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2021-05-20T22:23:25&#43;08:00" />
+<meta property="article:modified_time" content="2021-05-20T22:23:25&#43;08:00" />
+
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://daisy-mo.github.io/"><img class="app-header-avatar" src="/avatar.jpg" alt="John Doe" /></a>
+      <h1>My New Hugo Site</h1>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vehicula turpis sit amet elit pretium.</p>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">dijkstra分析及代码</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          May 20, 2021
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          2 min read
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <h3 id="前言">前言</h3>
+<ul>
+<li>SPFA<em>S<strong>P</strong>F**A</em>算法由于它上限 O(NM) = O(VE)<em>O</em>(<em>N**M</em>)=<em>O</em>(<em>V**E</em>)的时间复杂度,被卡掉的几率很大.在算法竞赛中,我们需要一个更稳定的算法:dijkstra<em>d<strong>i</strong>j<strong>k</strong>s<strong>t</strong>r**a</em>.</li>
+</ul>
+<h3 id="什么是dijkstradijkstra">什么是dijkstra<em>d<strong>i</strong>j<strong>k</strong>s<strong>t</strong>ra</em>?</h3>
+<ul>
+<li>dijkstra<em>d<strong>i</strong>j<strong>k</strong>s<strong>t</strong>ra</em>是一种单源最短路径算法,时间复杂度上限为O(n^2)<em>O</em>(<em>n</em>2)(朴素),在实际应用中较为稳定;;加上堆优化之后更是具有O((n+m)\log_{2}n)*O*((*n*+*m*)log2*n*)的时间复杂度,在稠密图中有不俗的表现.</li>
+</ul>
+<h3 id="dijkstradijkstra的原理流程">dijkstra<em>d<strong>i</strong>j<strong>k</strong>s<strong>t</strong>ra</em>的原理/流程?</h3>
+<ul>
+<li>dijkstra<em>d<strong>i</strong>j<strong>k</strong>s<strong>t</strong>ra</em>本质上的思想是贪心,它只适用于不含负权边的图.</li>
+<li>我们把点分成两类,一类是已经确定最短路径的点,称为&quot;白点&quot;,另一类是未确定最短路径的点,称为&quot;蓝点&quot;</li>
+<li>dijkstra<em>d<strong>i</strong>j<strong>k</strong>s<strong>t</strong>r**a</em>的流程如下::</li>
+<li>1.1. 初始化dis[start] = 0,<em>d<strong>i</strong>s</em>[<em>s<strong>t</strong>a<strong>r</strong>t</em>]=0,其余节点的dis<em>d<strong>i</strong>s</em>值为无穷大.</li>
+<li>2.2. 找一个dis<em>d<strong>i</strong>s</em>值最小的蓝点x,<em>x</em>,把节点x<em>x</em>变成白点.</li>
+<li>3.3. 遍历x<em>x</em>的所有出边(x,y,z),(<em>x</em>,<em>y</em>,<em>z</em>),若dis[y] &gt; dis<input checked="" disabled="" type="checkbox"> + z,<em>d<strong>i</strong>s</em>[<em>y</em>]&gt;<em>d<strong>i</strong>s</em>[<em>x</em>]+<em>z</em>,则令dis[y] = dis<input checked="" disabled="" type="checkbox"> + z<em>d<strong>i</strong>s</em>[<em>y</em>]=<em>d<strong>i</strong>s</em>[<em>x</em>]+<em>z</em></li>
+<li>4.4. 重复2,32,3两步,直到所有点都成为白点..</li>
+<li>时间复杂度为O(n^2)<em>O</em>(<em>n</em>2)</li>
+</ul>
+<h3 id="dijkstradijkstra为什么是正确的">dijkstra<em>d<strong>i</strong>j<strong>k</strong>s<strong>t</strong>r</em>a为什么是正确的</h3>
+<ul>
+<li>当所有边长都是非负数的时候,全局最小值不可能再被其他节点更新.所以在第22步中找出的蓝点x<em>x</em>必然满足:dis<input checked="" disabled="" type="checkbox"> :<em>d<strong>i</strong>s</em>[<em>x</em>]已经是起点到x<em>x</em>的最短路径..我们不断选择全局最小值进行标记和拓展,最终可以得到起点到每个节点的最短路径的长度</li>
+</ul>
+<h3 id="图解">图解</h3>
+<ul>
+<li>(令start = 1<em>s<strong>t</strong>a<strong>r</strong>t</em>=1)</li>
+<li>开始时我们把dis[start]<em>d<strong>i</strong>s</em>[<em>s<strong>t</strong>a<strong>r</strong>t</em>]初始化为00,其余点初始化为inf<em>i<strong>n</strong>f</em> <img src="https://i.loli.net/2018/07/25/5b583277e47e9.png" alt="初始化"></li>
+<li>第一轮循环找到dis<em>d<strong>i</strong>s</em>值最小的点11,将11变成白点,对所有与11相连的蓝点的dis<em>d<strong>i</strong>s</em>值进行修改,使得dis[2]=2,dis[3]=4,dis[4]=7<em>d<strong>i</strong>s</em>[2]=2,<em>d<strong>i</strong>s</em>[3]=4,<em>d<strong>i</strong>s</em>[4]=7 <img src="https://i.loli.net/2018/07/25/5b58347b9a37b.png" alt="1"></li>
+<li>第二轮循环找到dis<em>d<strong>i</strong>s</em>值最小的点22,将22变成白点,对所有与22相连的蓝点的dis<em>d<strong>i</strong>s</em>值进行修改,使得dis[3]=3,dis[5]=4<em>d<strong>i</strong>s</em>[3]=3,<em>d<strong>i</strong>s</em>[5]=4 <img src="https://i.loli.net/2018/07/25/5b586fa8de335.png" alt="2"></li>
+<li>第三轮循环找到dis<em>d<strong>i</strong>s</em>值最小的点33,将33变成白点,对所有与22相连的蓝点的dis<em>d<strong>i</strong>s</em>值进行修改,使得dis[4]=4<em>d<strong>i</strong>s</em>[4]=4 <img src="https://i.loli.net/2018/07/25/5b58703e8d0d6.png" alt="3"></li>
+<li>接下来两轮循环分别将4,54,5设为白点,算法结束,求出所有点的最短路径</li>
+<li>时间复杂度O(n^2)<em>O</em>(<em>n</em>2)</li>
+</ul>
+<h3 id="为什么dijkstradijkstra不能处理有负权边的情况">为什么dijkstra<em>d<strong>i</strong>j<strong>k</strong>s<strong>t</strong>ra</em>不能处理有负权边的情况?</h3>
+<ul>
+<li>我们来看下面这张图 <img src="https://i.loli.net/2018/07/25/5b58724845b8d.png" alt="4"></li>
+<li>22到33的边权为-4−4,显然从11到33的最短路径为-2−2 (1-&gt;2-&gt;3).(1−&gt;2−&gt;3).但在循环开始时程序会找到当前dis<em>d<strong>i</strong>s</em>值最小的点33,并标记它为白点.</li>
+<li>这时的dis[3]=1,<em>d<strong>i</strong>s</em>[3]=1,然而11并不是起点到33的最短路径.因为33已经被标为白点,所以dis[3]<em>d<strong>i</strong>s</em>[3]不会再被修改了.我们在边权存在负数的情况下得到了错误的答案.</li>
+</ul>
+<h3 id="dijkstradijkstra的堆优化">dijkstra<em>d<strong>i</strong>j<strong>k</strong>s<strong>t</strong>ra</em>的堆优化?</h3>
+<ul>
+<li>观察dijkstra<em>d<strong>i</strong>j<strong>k</strong>s<strong>t</strong>r**a</em>的流程,发现步骤22可以优化</li>
+<li>怎么优化呢?</li>
+<li>我会zkw线段树!我会斐波那契堆!</li>
+<li>我会堆!</li>
+<li>我们可以用堆对dis<em>d<strong>i</strong>s</em>数组进行维护,用O(\log_{2}n)*O*(log2*n*)的时间取出堆顶元素并删除,用O(\log_{2}n)*O*(log2*n*)遍历每条边,总复杂度O((n+m)\log_{2}n)*O*((*n*+*m*)log2*n*)</li>
+</ul>
+<p><strong>正权图请使用dijkstra算法,负权图请使用SPFA算法</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-cpp" data-lang="cpp"><span style="color:#75715e">#include</span><span style="color:#75715e">&lt;bits/stdc++.h&gt; </span><span style="color:#75715e">
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">using</span> <span style="color:#66d9ef">namespace</span> std;
+<span style="color:#66d9ef">const</span> <span style="color:#66d9ef">int</span> N <span style="color:#f92672">=</span> <span style="color:#ae81ff">1e5</span><span style="color:#f92672">+</span><span style="color:#ae81ff">10</span>, M <span style="color:#f92672">=</span> <span style="color:#ae81ff">5e5</span><span style="color:#f92672">+</span><span style="color:#ae81ff">10</span>;
+<span style="color:#75715e">#define INF 0x3f3f3f3f
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">edge</span> {
+	<span style="color:#66d9ef">int</span> to,dis,next;
+};
+
+edge e[M];
+<span style="color:#66d9ef">int</span> head[N],dis[N],cnt;
+<span style="color:#66d9ef">bool</span> vis[M];
+<span style="color:#66d9ef">int</span> n,m,s;
+
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">add_edge</span>(<span style="color:#66d9ef">int</span> u,<span style="color:#66d9ef">int</span> v,<span style="color:#66d9ef">int</span> d) {
+	cnt<span style="color:#f92672">++</span>;
+	e[cnt].dis <span style="color:#f92672">=</span> d;
+	e[cnt].to <span style="color:#f92672">=</span> v;
+	e[cnt].next <span style="color:#f92672">=</span> head[u];
+	head[u] <span style="color:#f92672">=</span> cnt;
+}
+
+<span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">node</span> {
+	<span style="color:#66d9ef">int</span> dis;
+	<span style="color:#66d9ef">int</span> pos;
+	<span style="color:#66d9ef">bool</span> <span style="color:#66d9ef">operator</span> <span style="color:#f92672">&lt;</span> (<span style="color:#66d9ef">const</span> node <span style="color:#f92672">&amp;</span>x) <span style="color:#66d9ef">const</span> {
+		<span style="color:#66d9ef">return</span> x.dis <span style="color:#f92672">&lt;</span> dis;
+	}
+};
+
+priority_queue<span style="color:#f92672">&lt;</span>node<span style="color:#f92672">&gt;</span> q;
+
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">dijkstra</span>() {
+	dis[s] <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+	q.push((node){<span style="color:#ae81ff">0</span>,s});
+	<span style="color:#66d9ef">while</span>(<span style="color:#f92672">!</span>q.empty()) {
+		node tmp <span style="color:#f92672">=</span> q.top();
+		q.pop();
+		<span style="color:#66d9ef">int</span> x <span style="color:#f92672">=</span> tmp.pos, d <span style="color:#f92672">=</span> tmp.dis;
+		<span style="color:#66d9ef">if</span>(vis[x]) <span style="color:#66d9ef">continue</span>;
+		vis[x] <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+		<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> head[x];i;i <span style="color:#f92672">=</span> e[i].next) {
+			<span style="color:#66d9ef">int</span> y <span style="color:#f92672">=</span> e[i].to;
+			<span style="color:#66d9ef">if</span>(dis[y] <span style="color:#f92672">&gt;</span> dis[x] <span style="color:#f92672">+</span> e[i].dis) {
+				dis[y] <span style="color:#f92672">=</span> dis[x] <span style="color:#f92672">+</span> e[i].dis;
+				<span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span>vis[y]) {
+					q.push((node){dis[y],y});
+				}
+			}
+		}
+	}
+}
+
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#66d9ef">int</span> u,v,d;
+	cin <span style="color:#f92672">&gt;&gt;</span> n <span style="color:#f92672">&gt;&gt;</span> m <span style="color:#f92672">&gt;&gt;</span> s;
+	memset(dis,INF,<span style="color:#66d9ef">sizeof</span>(dis));
+	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;i <span style="color:#f92672">&lt;</span> m;i<span style="color:#f92672">++</span>) {
+		cin <span style="color:#f92672">&gt;&gt;</span> u <span style="color:#f92672">&gt;&gt;</span> v <span style="color:#f92672">&gt;&gt;</span> d;
+		add_edge(u,v,d); 
+	}
+	dijkstra();
+	<span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;i<span style="color:#f92672">&lt;=</span>n;i<span style="color:#f92672">++</span>) {
+		cout <span style="color:#f92672">&lt;&lt;</span> dis[i] <span style="color:#f92672">&lt;&lt;</span> <span style="color:#e6db74">&#34; &#34;</span>;
+	}
+	cout <span style="color:#f92672">&lt;&lt;</span> endl;
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div>
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>
